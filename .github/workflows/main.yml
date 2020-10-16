@@ -18,6 +18,6 @@ jobs:
     - name: Building apk
       run: |
         flutter pub get
-        flutter build apk --debug --split-per-abi
+        flutter build apk --debug --split-per-abi -v
     # Tests would be added later
     # - run: flutter test
