@@ -1,5 +1,11 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:iit_app/model/DBmodalclasses/AllCouncilSummaryModel.dart';
+import 'package:iit_app/model/DBmodalclasses/ClubDetailModel.dart';
+import 'package:iit_app/model/DBmodalclasses/ClubSummaryModel.dart';
+import 'package:iit_app/model/DBmodalclasses/CouncildetailModel.dart';
+import 'package:iit_app/model/DBmodalclasses/PorholderModel.dart';
+import 'package:iit_app/model/DBmodalclasses/Workshopsummarymodel.dart';
 import 'package:iit_app/model/built_post.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -68,189 +74,7 @@ String subscribedUsersString = 'subscribedUsers';
 // ?---------------------------------------------------------------------------------------------------------
 // ?---------------------------------------------------------------------------------------------------------
 
-Map<String, dynamic> workshopInfoToMap(BuiltWorkshopSummaryPost workshop) {
-  Map<String, dynamic> map = {
-    idString: workshop.id,
-    clubIdString: workshop.club.id,
-    clubString: workshop.club.name == null ? '' : workshop.club.name,
-    councilIdString: workshop.club.council.id,
-    smallImageUrlString: workshop.club.small_image_url == null
-        ? ''
-        : workshop.club.small_image_url,
-    largeImageUrlString: workshop.club.large_image_url == null
-        ? ''
-        : workshop.club.large_image_url,
-    titleString: workshop.title == null ? '' : workshop.title,
-    dateString: workshop.date == null ? '' : workshop.date,
-    timeString: workshop.time == null ? '' : workshop.time,
-  };
-  return map;
-}
 
-Map<String, dynamic> councilSummaryInfoToMap(
-    BuiltAllCouncilsPost councilSummary) {
-  Map<String, dynamic> map = {
-    idString: councilSummary.id,
-    nameString: councilSummary.name == null ? '' : councilSummary.name,
-    smallImageUrlString: councilSummary.small_image_url == null
-        ? ''
-        : councilSummary.small_image_url,
-    largeImageUrlString: councilSummary.large_image_url == null
-        ? ''
-        : councilSummary.large_image_url,
-  };
-  return map;
-}
-
-Map<String, dynamic> councilDetailToMap(BuiltCouncilPost councilPost) {
-  Map<String, dynamic> map = {
-    idString: councilPost.id,
-    nameString: councilPost.name == null ? '' : councilPost.name,
-    descriptionString:
-        councilPost.description == null ? '' : councilPost.description,
-    gensecIdString: councilPost.gensec == null ? -1 : councilPost.gensec.id,
-    jointGensecId1String: (councilPost.joint_gensec.isEmpty)
-        ? -1
-        : councilPost.joint_gensec[0].id,
-    jointGensecId2String: (councilPost.joint_gensec.length < 2)
-        ? -1
-        : councilPost.joint_gensec[1].id,
-    smallImageUrlString:
-        councilPost.small_image_url == null ? '' : councilPost.small_image_url,
-    largeImageUrlString:
-        councilPost.large_image_url == null ? '' : councilPost.large_image_url,
-    isPORHolderString: councilPost.is_por_holder == null
-        ? 0
-        : (councilPost.is_por_holder == true ? 1 : 0),
-    websiteUrlString:
-        councilPost.website_url == null ? '' : councilPost.website_url,
-    facebookUrlString:
-        councilPost.facebook_url == null ? '' : councilPost.facebook_url,
-    twitterUrlString:
-        councilPost.twitter_url == null ? '' : councilPost.twitter_url,
-    instagramUrlString:
-        councilPost.instagram_url == null ? '' : councilPost.instagram_url,
-    linkedinUrlString:
-        councilPost.linkedin_url == null ? '' : councilPost.linkedin_url,
-    youtubeUrlString:
-        councilPost.youtube_url == null ? '' : councilPost.youtube_url,
-  };
-  return map;
-}
-
-Map<String, dynamic> porInfoToMap(
-    {SecyPost por, int councilId = -1, int clubId = -1}) {
-  Map<String, dynamic> map = {
-    idString: por.id,
-    councilIdString: councilId,
-    clubIdString: clubId,
-    nameString: por.name == null ? '' : por.name,
-    emailString: por.email == null ? '' : por.email,
-    phoneNumberString: por.phone_number == null ? '' : por.phone_number,
-    photoUrlString: por.photo_url == null ? '' : por.photo_url,
-  };
-  return map;
-}
-
-Map<String, dynamic> clubSummaryInfoToMap(ClubListPost clubSummary) {
-  Map<String, dynamic> map = {
-    idString: clubSummary.id,
-    nameString: clubSummary.name == null ? '' : clubSummary.name,
-    councilIdString:
-        (clubSummary.council == null || clubSummary.council.id == null)
-            ? 0
-            : clubSummary.council.id,
-    smallImageUrlString:
-        clubSummary.small_image_url == null ? '' : clubSummary.small_image_url,
-    largeImageUrlString:
-        clubSummary.large_image_url == null ? '' : clubSummary.large_image_url,
-  };
-  return map;
-}
-
-Map<String, dynamic> clubDetailToMap(BuiltClubPost clubPost) {
-  Map<String, dynamic> map = {
-    idString: clubPost.id,
-    nameString: clubPost.name == null ? '' : clubPost.name,
-    descriptionString: clubPost.description == null ? '' : clubPost.description,
-    councilIdString: clubPost.council.id,
-    councilNameString: clubPost.council.name,
-    councilSmallImageUrlString: clubPost.council.small_image_url,
-    councilLargeImageUrlString: clubPost.council.large_image_url,
-    secyIdString: clubPost.secy == null ? -1 : clubPost.secy.id,
-    jointSecyId1String:
-        (clubPost.joint_secy.isEmpty) ? -1 : clubPost.joint_secy[0].id,
-    jointSecyId2String:
-        (clubPost.joint_secy.length < 2) ? -1 : clubPost.joint_secy[1].id,
-    smallImageUrlString:
-        clubPost.small_image_url == null ? '' : clubPost.small_image_url,
-    largeImageUrlString:
-        clubPost.large_image_url == null ? '' : clubPost.large_image_url,
-    isSubscribedString: clubPost.is_subscribed == true ? 1 : 0,
-    subscribedUsersString: clubPost.subscribed_users,
-    isPORHolderString: clubPost.is_por_holder == null
-        ? 0
-        : (clubPost.is_por_holder == true ? 1 : 0),
-    websiteUrlString: clubPost.website_url == null ? '' : clubPost.website_url,
-    facebookUrlString:
-        clubPost.facebook_url == null ? '' : clubPost.facebook_url,
-    twitterUrlString: clubPost.twitter_url == null ? '' : clubPost.twitter_url,
-    instagramUrlString:
-        clubPost.instagram_url == null ? '' : clubPost.instagram_url,
-    linkedinUrlString:
-        clubPost.linkedin_url == null ? '' : clubPost.linkedin_url,
-    youtubeUrlString: clubPost.youtube_url == null ? '' : clubPost.youtube_url,
-  };
-  return map;
-}
-
-BuiltWorkshopSummaryPost workshopSummaryFromMap(
-    dynamic map, BuiltAllCouncilsPost councilSummary) {
-  final workshop = BuiltWorkshopSummaryPost((b) => b
-    ..id = map[idString]
-    ..club.id = map[clubIdString]
-    ..club.name = map[clubString]
-    ..club.council =
-        councilSummary == null ? null : (councilSummary.toBuilder())
-    ..club.small_image_url = map[smallImageUrlString]
-    ..club.large_image_url = map[largeImageUrlString]
-    ..title = map[titleString]
-    ..date = map[dateString]
-    ..time = map[timeString]);
-  return workshop;
-}
-
-BuiltAllCouncilsPost councilSummaryFromMap(dynamic map) {
-  final council = BuiltAllCouncilsPost((b) => b
-    ..id = map[idString]
-    ..name = map[nameString]
-    ..small_image_url = map[smallImageUrlString]
-    ..large_image_url = map[largeImageUrlString]);
-  return council;
-}
-
-// var councilDetailFromMap(dynamic map) { }
-
-SecyPost porHolderInfoFromMap(dynamic map) {
-  final porHolder = SecyPost((b) => b
-    ..id = map[idString]
-    ..name = map[nameString]
-    ..email = map[emailString]
-    ..phone_number = map[phoneNumberString]
-    ..photo_url = map[photoUrlString]);
-  return porHolder;
-}
-
-ClubListPost clubSummaryFromMap(
-    dynamic map, BuiltAllCouncilsPost councilSummary) {
-  final clubSummary = ClubListPost((b) => b
-    ..id = map[idString]
-    ..name = map[nameString]
-    ..council = councilSummary == null ? null : (councilSummary.toBuilder())
-    ..small_image_url = map[smallImageUrlString]
-    ..large_image_url = map[largeImageUrlString]);
-  return clubSummary;
-}
 
 // singleton class to manage the database
 class DatabaseHelper {
@@ -397,21 +221,21 @@ class DatabaseHelper {
   Future insertWorkshopSummaryIntoDatabase(
       {@required BuiltWorkshopSummaryPost post}) async {
     Database db = await database;
-    await db.insert(workshopSummaryString, workshopInfoToMap(post));
+    await db.insert(workshopSummaryString, Workshopsummarymodel.workshopInfoToMap(post));
   }
 
   Future insertCouncilSummaryIntoDatabase(
       {@required BuiltAllCouncilsPost councilSummary}) async {
     Database db = await database;
     await db.insert(
-        allCouncislSummaryString, councilSummaryInfoToMap(councilSummary));
+        allCouncislSummaryString, AllCouncilSummaryModel.councilSummaryInfoToMap(councilSummary));
   }
 
   Future insertCouncilDetailsIntoDatabase(
       {@required BuiltCouncilPost councilPost}) async {
     Database db = await database;
 
-    await db.insert(councilDetailString, councilDetailToMap(councilPost));
+    await db.insert(councilDetailString, CouncildetailModel.councilDetailToMap(councilPost));
 
     await insertPORHoldersIntoDatabase(
         db: db,
@@ -430,17 +254,17 @@ class DatabaseHelper {
       @required BuiltList<SecyPost> jointPOR}) async {
     if (mainPOR != null) {
       await db.insert(porHoldersString,
-          porInfoToMap(por: mainPOR, councilId: councilId, clubId: clubId));
+         PorholderModel.porInfoToMap(por: mainPOR, councilId: councilId, clubId: clubId));
     }
 
     if (jointPOR.isEmpty != true) {
       await db.insert(porHoldersString,
-          porInfoToMap(por: jointPOR[0], councilId: councilId, clubId: clubId));
+          PorholderModel.porInfoToMap(por: jointPOR[0], councilId: councilId, clubId: clubId));
 
       if (jointPOR.length > 1) {
         await db.insert(
             porHoldersString,
-            porInfoToMap(
+            PorholderModel.  porInfoToMap(
                 por: jointPOR[1], councilId: councilId, clubId: clubId));
       }
     }
@@ -449,14 +273,14 @@ class DatabaseHelper {
   Future insertClubsSummaryIntoDatabase(
       {@required Database db, @required BuiltList<ClubListPost> clubs}) async {
     for (var club in clubs) {
-      await db.insert(clubSummaryString, clubSummaryInfoToMap(club));
+      await db.insert(clubSummaryString, ClubSummaryModel. clubSummaryInfoToMap(club));
     }
   }
 
   Future insertClubDetailsIntoDatabase(
       {@required BuiltClubPost clubPost}) async {
     Database db = await database;
-    await db.insert(clubDetailsString, clubDetailToMap(clubPost));
+    await db.insert(clubDetailsString, ClubDetailModel.clubDetailToMap(clubPost));
 
     await insertPORHoldersIntoDatabase(
         db: db,
@@ -499,7 +323,7 @@ class DatabaseHelper {
           await getCouncilsSummaryById(db: db, councilId: map[councilIdString]);
 
       BuiltWorkshopSummaryPost workshop =
-          workshopSummaryFromMap(map, councilSummary);
+          Workshopsummarymodel.workshopSummaryFromMap(map, councilSummary);
       builder.add(workshop);
     }
     var workshops = builder.build();
@@ -525,7 +349,7 @@ class DatabaseHelper {
 
     var map = maps[0];
 
-    BuiltAllCouncilsPost councilSummary = councilSummaryFromMap(map);
+    BuiltAllCouncilsPost councilSummary = AllCouncilSummaryModel.councilSummaryFromMap(map);
 
     return councilSummary;
   }
@@ -545,7 +369,7 @@ class DatabaseHelper {
     var builder = list.toBuilder();
 
     for (var map in maps) {
-      builder.add(councilSummaryFromMap(map));
+      builder.add( AllCouncilSummaryModel.councilSummaryFromMap(map));
     }
 
     var councilsSummary = builder.build();
@@ -649,7 +473,7 @@ class DatabaseHelper {
 
     var map = maps[0];
 
-    SecyPost porHolder = porHolderInfoFromMap(map);
+    SecyPost porHolder = PorholderModel.porHolderInfoFromMap(map);
 
     return porHolder;
   }
@@ -677,7 +501,7 @@ class DatabaseHelper {
       BuiltAllCouncilsPost councilSummary =
           await getCouncilsSummaryById(db: db, councilId: map[councilIdString]);
 
-      builder.add(clubSummaryFromMap(map, councilSummary));
+      builder.add(ClubSummaryModel.clubSummaryFromMap(map, councilSummary));
     }
 
     var clubsSummary = builder.build();
